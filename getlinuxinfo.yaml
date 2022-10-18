@@ -1,0 +1,50 @@
+---
+
+- name: Update Servers
+  hosts: all
+  gather_facts: false
+  vars_files:
+  - input_hosts
+
+  tasks:
+  - name: Attempt to connect via SSH
+    wait_for:
+      host: "{{ item }}"
+      port: 22
+      timeout: 60
+      ignore_error: true
+    register: ssh_connectivity
+    with_items: "{{ input_hosts }}"
+
+  - name: Attempt to connect via WinRM
+    wait_for:
+      host: "{{ item }}"
+      port: 5985
+      timeout: 60
+      ignore_error: true
+    register: winrm_connectivity
+    with_items: "{{ input_hosts }}"
+
+  - name: Populate Linux hosts group
+    add_host:
+      name: "{{ item.item }}"
+      groups: Linux
+    when: item.state = "started"
+    with_items: "{{ ssh_connectivity.results }}"
+
+  - name: Populate Windows hosts group
+    add_host:
+      name: "{{ item.item }}"
+      groups: Windows
+    when: item.state = "started"
+    with_items: "{{ winrm_connectivity.results }}"
+
+- hosts: Linux
+- name: Running Commands on Linux Machines
+  tasks:
+    - ping:
+
+- hosts: Windows
+- name: Running Commands on Windows Machines
+  tasks:
+    - win_ping:

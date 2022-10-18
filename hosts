@@ -2,11 +2,11 @@ vm:
   children:
     linux:
       hosts:
-        192.168.15.16      
+        192.168.15.17      
 
     windows:
       hosts:
-        192.168.15.17        
+        192.168.15.18        
        
 connectorlinux:
   children:
