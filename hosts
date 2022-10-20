@@ -2,7 +2,7 @@ vm:
   children:
     linux:
       hosts:
-        192.168.15.17      
+        192.168.15.16      
 
     windows:
       hosts:
